@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock, Paper, Scissors</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: radial-gradient(circle, #1f1c2c, #928dab);
+            color: white;
+            font-family: 'Verdana', sans-serif;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-shadow: 2px 2px 10px #000;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            display: flex;
+            width: 90%;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player-side, .computer-side {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .choice {
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 10px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .choice:hover {
+            transform: scale(1.2);
+            box-shadow: 0px 0px 10px white;
+        }
+
+        #result {
+            font-size: 1.8rem;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            text-shadow: 1px 1px 8px #000;
+            font-weight: bold;
+        }
+
+        #startButton, #restartButton {
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        #startButton:hover, #restartButton:hover {
+            background-color: #d35400;
+            transform: translateY(-5px);
+        }
+
+        .hidden {
+            display: none;
+        }
+        
+        footer {
+            margin-top: 20px;
+            font-size: 1.4rem;
+            color: white;
+            background: linear-gradient(145deg, #3a3a3a, #565656);
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5), -5px -5px 15px rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+            transition: all 0.4s ease-in-out;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+        
+        footer:hover {
+            transform: translateY(-3px);
+            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.6), -8px -8px 20px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(145deg, #565656, #3a3a3a);
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
+        }
+
+
+    </style>
+</head>
+<body>
+    <h1>Rock, Paper, Scissors</h1>
+    <button id="startButton">Start Game</button>
+    <div class="game-container hidden" id="gameArea">
+        <div class="player-side" id="playerChoices">
+            <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/rock_c.png" alt="Rock" class="choice" data-choice="rock">
+            <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/paper_u.png" alt="Paper" class="choice" data-choice="paper">
+            <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/scissor_u.png" alt="Scissors" class="choice" data-choice="scissors">
+        </div>
+        <div id="result" class="hidden">Result will appear here!</div>
+        <div class="computer-side" id="computerChoices">
+            <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/rock_c.png" alt="Rock" class="choice" data-choice="rock">
+            <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/paper_u.png" alt="Paper" class="choice" data-choice="paper">
+            <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/scissor_u.png" alt="Scissors" class="choice" data-choice="scissors">
+        </div>
+    </div>
+    <button id="restartButton" class="hidden">Restart Game</button>
+
+    <footer>For Tejas Sir 🔥😊</footer>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const restartButton = document.getElementById('restartButton');
+        const gameArea = document.getElementById('gameArea');
+        const resultDisplay = document.getElementById('result');
+        const playerChoices = document.getElementById('playerChoices');
+        const computerChoices = document.getElementById('computerChoices');
+
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', restartGame);
+
+        function startGame() {
+            startButton.classList.add('hidden');
+            gameArea.classList.remove('hidden');
+            resultDisplay.classList.add('hidden');
+            restartButton.classList.add('hidden');
+            resetChoices();
+
+            playerChoices.querySelectorAll('.choice').forEach(choice => {
+                choice.addEventListener('click', handlePlayerChoice);
+            });
+        }
+
+        function handlePlayerChoice(event) {
+            const playerChoice = event.target.dataset.choice;
+            const computerChoice = getRandomChoice();
+            const result = determineWinner(playerChoice, computerChoice);
+
+            resultDisplay.textContent = result;
+            resultDisplay.classList.remove('hidden');
+            clearUnselectedChoices(playerChoices, playerChoice);
+            clearUnselectedChoices(computerChoices, computerChoice);
+            restartButton.classList.remove('hidden');
+        }
+
+        function clearUnselectedChoices(side, selectedChoice) {
+            side.querySelectorAll('.choice').forEach(choice => {
+                if (choice.dataset.choice !== selectedChoice) {
+                    choice.remove();
+                }
+            });
+        }
+
+        function getRandomChoice() {
+            const choices = ['rock', 'paper', 'scissors'];
+            return choices[Math.floor(Math.random() * choices.length)];
+        }
+
+        function determineWinner(userChoice, computerChoice) {
+            if (userChoice === computerChoice) {
+                return "It's a tie!";
+            } else if (
+                (userChoice === 'rock' && computerChoice === 'scissors') ||
+                (userChoice === 'paper' && computerChoice === 'rock') ||
+                (userChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                return 'You win!🎉';
+            } else {
+                return 'You lose!😢';
+            }
+        }
+
+        function resetChoices() {
+            const playerHTML = `
+                <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/rock_c.png" alt="Rock" class="choice" data-choice="rock">
+                <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/paper_u.png" alt="Paper" class="choice" data-choice="paper">
+                <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/scissor_u.png" alt="Scissors" class="choice" data-choice="scissors">
+            `;
+            const computerHTML = playerHTML;
+
+            playerChoices.innerHTML = playerHTML;
+            computerChoices.innerHTML = computerHTML;
+        }
+
+        function restartGame() {
+            resetChoices();
+            resultDisplay.classList.add('hidden');
+            restartButton.classList.add('hidden');
+            startGame();
+        }
+    </script>
+</body>
+</html>
