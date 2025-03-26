@@ -37,6 +37,13 @@
             align-items: center;
         }
 
+        .label {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+        }
+
         .choice {
             width: 80px;
             height: 80px;
@@ -83,30 +90,26 @@
         .hidden {
             display: none;
         }
-        
+
         footer {
             margin-top: 20px;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: white;
             background: linear-gradient(145deg, #3a3a3a, #565656);
-            padding: 15px 30px;
+            padding: 10px 20px;
             border-radius: 12px;
             text-align: center;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5), -5px -5px 15px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease-in-out;
             font-weight: bold;
-            transition: all 0.4s ease-in-out;
-            letter-spacing: 1px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
         }
-        
+
         footer:hover {
             transform: translateY(-3px);
             box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.6), -8px -8px 20px rgba(255, 255, 255, 0.3);
             background: linear-gradient(145deg, #565656, #3a3a3a);
-            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
         }
-
-
     </style>
 </head>
 <body>
@@ -114,12 +117,14 @@
     <button id="startButton">Start Game</button>
     <div class="game-container hidden" id="gameArea">
         <div class="player-side" id="playerChoices">
+            <div class="label">User</div>
             <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/rock_c.png" alt="Rock" class="choice" data-choice="rock">
             <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/paper_u.png" alt="Paper" class="choice" data-choice="paper">
             <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/scissor_u.png" alt="Scissors" class="choice" data-choice="scissors">
         </div>
         <div id="result" class="hidden">Result will appear here!</div>
         <div class="computer-side" id="computerChoices">
+            <div class="label">Opponent</div>
             <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/rock_c.png" alt="Rock" class="choice" data-choice="rock">
             <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/paper_u.png" alt="Paper" class="choice" data-choice="paper">
             <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/scissor_u.png" alt="Scissors" class="choice" data-choice="scissors">
@@ -179,7 +184,7 @@
 
         function determineWinner(userChoice, computerChoice) {
             if (userChoice === computerChoice) {
-                return "It's a tie!";
+                return "It's a tie!👍";
             } else if (
                 (userChoice === 'rock' && computerChoice === 'scissors') ||
                 (userChoice === 'paper' && computerChoice === 'rock') ||
@@ -193,11 +198,17 @@
 
         function resetChoices() {
             const playerHTML = `
+                <div class="label">User</div>
                 <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/rock_c.png" alt="Rock" class="choice" data-choice="rock">
                 <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/paper_u.png" alt="Paper" class="choice" data-choice="paper">
                 <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/scissor_u.png" alt="Scissors" class="choice" data-choice="scissors">
             `;
-            const computerHTML = playerHTML;
+            const computerHTML = `
+                <div class="label">Opponent</div>
+                <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/rock_c.png" alt="Rock" class="choice" data-choice="rock">
+                <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/paper_u.png" alt="Paper" class="choice" data-choice="paper">
+                <img src="https://abdulahadmansoori.github.io/RockPaperScissor/icons/scissor_u.png" alt="Scissors" class="choice" data-choice="scissors">
+            `;
 
             playerChoices.innerHTML = playerHTML;
             computerChoices.innerHTML = computerHTML;
